@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOV Calculator</title>
+<style>
+  body {
+    font-family: -apple-system, system-ui;
+    text-align: center;
+    margin-top: 50px;
+  }
+  input {
+    font-size: 22px;
+    padding: 10px;
+    width: 200px;
+    margin: 10px;
+  }
+  button {
+    font-size: 22px;
+    padding: 12px 20px;
+    margin-top: 20px;
+  }
+  #result {
+    font-size: 48px;
+    margin-top: 30px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h2>SMOKERs FOV Calculator</h2>
+
+<div>
+  <input id="distance" placeholder="Distance (cm)">
+</div>
+
+<div>
+  <input id="width" placeholder="Width (cm)">
+</div>
+
+<button onclick="calculate()">Calculate</button>
+
+<div id="result"></div>
+
+<script>
+function calculate() {
+  const D = parseFloat(document.getElementById('distance').value);
+  const W = parseFloat(document.getElementById('width').value);
+  const angle = 2 * Math.atan((W/2)/D) * 180 / Math.PI;
+  document.getElementById('result').innerText =
+    angle.toFixed(2) + "\u00B0";
+}
+</script>
+
+</body>
+</html>
