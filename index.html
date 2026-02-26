@@ -6,24 +6,30 @@
 <title>SMOKERs FOV Calculator</title>
 
 <style>
+html, body{
+  height:100%;
+  overflow:hidden; /* prevent scroll/rubber-band */
+}
+
 body{
   margin:0;
   background:#000;
-  min-height:100vh;
-  display:grid;
-  place-items:center;
 }
 
 /* Poster container */
 .poster{
-  position:relative;
+  position:fixed;
+  inset:0;
+  margin:auto;
+
   width:min(94vw, 860px);
   aspect-ratio: 1024 / 1536;
+
   background:url("bg.png") center/cover no-repeat;
   overflow:hidden;
 }
 
-/* 🔹 Soft dark fade under left input */
+/* Soft dark fades under inputs */
 .shadeLeft{
   position:absolute;
   left:21%;
@@ -31,7 +37,6 @@ body{
   width:34%;
   height:4.8%;
   pointer-events:none;
-
   background: radial-gradient(
     ellipse at center,
     rgba(0,0,0,0.30) 0%,
@@ -40,7 +45,6 @@ body{
   );
 }
 
-/* 🔹 Soft dark fade under right input */
 .shadeRight{
   position:absolute;
   left:54%;
@@ -48,7 +52,6 @@ body{
   width:34%;
   height:4.8%;
   pointer-events:none;
-
   background: radial-gradient(
     ellipse at center,
     rgba(0,0,0,0.30) 0%,
@@ -57,7 +60,7 @@ body{
   );
 }
 
-/* Input overlays */
+/* Inputs + button overlays */
 .hit{
   position:absolute;
   border:0;
@@ -76,7 +79,7 @@ body{
   padding:0;
   margin:0;
 
-  /* Clean outline using shadow */
+  /* Clean outline using shadow (no text-stroke artifacts) */
   text-shadow:
     -1px 0 #000,
      1px 0 #000,
@@ -110,6 +113,7 @@ body{
   transition:transform 0.15s ease;
 }
 
+/* Mobile tweak */
 @media (max-width:420px){
   .hit{ font-size:20px; }
 }
@@ -120,49 +124,28 @@ body{
 
 <div class="poster">
 
-  <!-- Soft shading -->
+  <!-- Soft shading under inputs -->
   <div class="shadeLeft"></div>
   <div class="shadeRight"></div>
 
   <!-- DISTANCE -->
   <input id="distance" class="hit"
     inputmode="numeric" pattern="[0-9]*" maxlength="4"
-    style="
-      left:21%;
-      top:74.2%;
-      width:34%;
-      height:4.8%;
-    " />
+    style="left:21%; top:74.2%; width:34%; height:4.8%;" />
 
   <!-- WIDTH -->
   <input id="width" class="hit"
     inputmode="numeric" pattern="[0-9]*" maxlength="4"
-    style="
-      left:54%;
-      top:74.2%;
-      width:34%;
-      height:4.8%;
-    " />
+    style="left:54%; top:74.2%; width:34%; height:4.8%;" />
 
-  <!-- CALCULATE -->
+  <!-- CALCULATE (invisible button area) -->
   <button id="calcBtn" class="hit"
-    style="
-      left:20%;
-      top:81.5%;
-      width:60%;
-      height:7%;
-      cursor:pointer;
-    ">
+    style="left:20%; top:81.5%; width:60%; height:7%; cursor:pointer;">
   </button>
 
   <!-- RESULT -->
   <div id="result" class="result"
-    style="
-      left:33%;
-      top:14%;
-      width:34%;
-      font-size:56px;
-    ">
+    style="left:33%; top:14%; width:34%; font-size:56px;">
   </div>
 
 </div>
@@ -176,6 +159,21 @@ const calcBtn = document.getElementById("calcBtn");
 function enforce4Digits(el){
   el.value = (el.value || "").replace(/\D+/g, "").slice(0,4);
 }
+
+/* Make iPhone “jump” consistent: center the focused field */
+function keepInView(el){
+  setTimeout(() => {
+    try{
+      el.scrollIntoView({ block:"center", inline:"nearest" });
+    }catch(e){}
+  }, 50);
+}
+
+distEl.addEventListener("focus", () => keepInView(distEl));
+widthEl.addEventListener("focus", () => keepInView(widthEl));
+
+distEl.addEventListener("input", ()=>enforce4Digits(distEl));
+widthEl.addEventListener("input", ()=>enforce4Digits(widthEl));
 
 function calculate(){
   enforce4Digits(distEl);
@@ -196,9 +194,7 @@ function calculate(){
   setTimeout(()=> resultEl.style.transform="scale(1)",140);
 }
 
-distEl.addEventListener("input",()=>enforce4Digits(distEl));
-widthEl.addEventListener("input",()=>enforce4Digits(widthEl));
-calcBtn.addEventListener("click",calculate);
+calcBtn.addEventListener("click", calculate);
 
 [distEl,widthEl].forEach(el=>{
   el.addEventListener("keydown",(e)=>{
