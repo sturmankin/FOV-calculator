@@ -23,29 +23,35 @@ body{
   overflow:hidden;
 }
 
-/* Invisible overlays aligned to artwork */
+/* Overlays aligned to artwork */
 .hit{
   position:absolute;
   border:0;
   outline:0;
   background:transparent;
 
-  /* Text visible now */
-  color:#111;
-  -webkit-text-fill-color:#111;
-  caret-color:#111;
+  /* ✅ White text */
+  color:#fff;
+  -webkit-text-fill-color:#fff;   /* iOS Safari */
+  caret-color:#fff;
 
   font-family:-apple-system, system-ui, sans-serif;
-  font-weight:900;
+  font-weight:1000;
   font-size:30px;
   text-align:center;
 
   padding:0;
+  margin:0;
+
+  /* makes white readable on light/blue field */
+  text-shadow:
+    0 3px 0 rgba(0,0,0,0.85),
+    0 0 10px rgba(0,0,0,0.35);
 }
 
-/* Subtle focus */
+/* subtle focus ring */
 .hit:focus{
-  box-shadow:0 0 0 3px rgba(0,0,0,0.35);
+  box-shadow:0 0 0 3px rgba(255,255,255,0.18);
   border-radius:12px;
 }
 
@@ -75,25 +81,25 @@ body{
 
 <div class="poster">
 
-  <!-- DISTANCE -->
-  <input id="distance" class="hit" inputmode="decimal"
+  <!-- DISTANCE (moved DOWN into the blue box) -->
+  <input id="distance" class="hit" inputmode="numeric" pattern="[0-9]*" maxlength="4"
     style="
       left:12%;
-      top:68.4%;
+      top:72.1%;
       width:34%;
-      height:6.2%;
+      height:5.6%;
     " />
 
-  <!-- WIDTH -->
-  <input id="width" class="hit" inputmode="decimal"
+  <!-- WIDTH (moved DOWN into the blue box) -->
+  <input id="width" class="hit" inputmode="numeric" pattern="[0-9]*" maxlength="4"
     style="
       left:54%;
-      top:68.4%;
+      top:72.1%;
       width:34%;
-      height:6.2%;
+      height:5.6%;
     " />
 
-  <!-- CALCULATE -->
+  <!-- CALCULATE (kept same for now) -->
   <button id="calcBtn" class="hit"
     style="
       left:20%;
@@ -101,7 +107,7 @@ body{
       width:60%;
       height:7.4%;
       cursor:pointer;
-    ">
+    " aria-label="Calculate">
   </button>
 
   <!-- RESULT (Skull Eyes) -->
@@ -111,8 +117,7 @@ body{
       top:18%;
       width:34%;
       font-size:44px;
-    ">
-  </div>
+    "></div>
 
 </div>
 
@@ -122,7 +127,15 @@ const widthEl = document.getElementById("width");
 const resultEl = document.getElementById("result");
 const calcBtn = document.getElementById("calcBtn");
 
+function enforce4Digits(el){
+  // keep only digits, max 4
+  el.value = (el.value || "").replace(/\D+/g, "").slice(0, 4);
+}
+
 function calculate(){
+  enforce4Digits(distEl);
+  enforce4Digits(widthEl);
+
   const D = parseFloat(distEl.value);
   const W = parseFloat(widthEl.value);
 
@@ -134,12 +147,14 @@ function calculate(){
   const angle = 2 * Math.atan((W/2)/D) * 180 / Math.PI;
   resultEl.textContent = angle.toFixed(2) + "°";
 
-  /* skull eye pop */
   resultEl.style.transform="scale(1.15)";
   setTimeout(()=> resultEl.style.transform="scale(1)",140);
 }
 
-calcBtn.addEventListener("click",calculate);
+distEl.addEventListener("input", () => enforce4Digits(distEl));
+widthEl.addEventListener("input", () => enforce4Digits(widthEl));
+
+calcBtn.addEventListener("click", calculate);
 
 [distEl,widthEl].forEach(el=>{
   el.addEventListener("keydown",(e)=>{
