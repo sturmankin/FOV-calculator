@@ -30,7 +30,6 @@ body{
 
   color:#ffffff;
   -webkit-text-fill-color:#ffffff;   /* iOS Safari */
-  -webkit-text-stroke: 1px #000;     /* ✨ black outline */
 
   caret-color:#ffffff;
 
@@ -42,9 +41,13 @@ body{
   padding:0;
   margin:0;
 
-  /* subtle depth */
+  /* ✅ clean outline + depth (no text-stroke artifacts on digits like 2) */
   text-shadow:
-    0 3px 0 rgba(0,0,0,0.8);
+    -1px 0 #000,
+     1px 0 #000,
+     0 -1px #000,
+     0  1px #000,
+     0  3px 0 rgba(0,0,0,0.8);
 }
 
 .hit:focus{
