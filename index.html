@@ -1,163 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SMOKERs FOV Calculator</title>
 
 <style>
-  body{
-    margin:0;
-    background:#000;
-    min-height:100vh;
-    display:grid;
-    place-items:center;
-  }
+body{
+  margin:0;
+  background:#000;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+}
 
-  /* Poster container matches bg.png aspect ratio (1024×1536 = 2:3) */
-  .poster{
-    position:relative;
-    width:min(94vw, 860px);
-    aspect-ratio: 1024 / 1536;
-    background: url("bg.png") center/cover no-repeat;
-    overflow:hidden;
-  }
+/* Poster container (bg.png = 1024x1536 = 2:3 ratio) */
+.poster{
+  position:relative;
+  width:min(94vw, 860px);
+  aspect-ratio: 1024 / 1536;
+  background:url("bg.png") center/cover no-repeat;
+  overflow:hidden;
+}
 
-  /* Toggle this to 1 while aligning */
-  :root { --debug: 0; }
+/* Invisible overlays aligned to artwork */
+.hit{
+  position:absolute;
+  border:0;
+  outline:0;
+  background:transparent;
 
-  /* Hitboxes */
-  .hit{
-    position:absolute;
-    border:0;
-    outline:0;
-    background:transparent;
+  /* Text visible now */
+  color:#111;
+  -webkit-text-fill-color:#111;
+  caret-color:#111;
 
-    /* ✅ SHOW what you type */
-    color: rgba(20,20,20,0.92);
-    -webkit-text-fill-color: rgba(20,20,20,0.92); /* iOS Safari */
-    caret-color:#111;
+  font-family:-apple-system, system-ui, sans-serif;
+  font-weight:900;
+  font-size:30px;
+  text-align:center;
 
-    font-family:-apple-system, system-ui, sans-serif;
-    font-size:28px;
-    font-weight:900;
-    text-align:center;
-    padding:0;
-    margin:0;
+  padding:0;
+}
 
-    /* Makes text read clean on busy texture */
-    text-shadow:
-      0 2px 0 rgba(255,255,255,0.35),
-      0 1px 8px rgba(0,0,0,0.25);
+/* Subtle focus */
+.hit:focus{
+  box-shadow:0 0 0 3px rgba(0,0,0,0.35);
+  border-radius:12px;
+}
 
-    /* Debug outline */
-    box-shadow: 0 0 0 calc(var(--debug) * 3px) rgba(255,0,0,0.65);
-    background: rgba(255,255,0, calc(var(--debug) * 0.20));
-    border-radius: 12px;
-  }
+/* Result in skull eyes */
+.result{
+  position:absolute;
+  font-family:-apple-system, system-ui, sans-serif;
+  font-weight:1000;
+  color:#ffe100;
+  text-shadow:
+    0 3px 0 rgba(0,0,0,0.9),
+    0 0 18px rgba(255,225,0,0.6);
+  letter-spacing:-0.5px;
+  pointer-events:none;
+  text-align:center;
+  transition:transform 0.15s ease;
+}
 
-  /* Optional: focus hint */
-  .hit:focus{
-    box-shadow:
-      0 0 0 3px rgba(0,0,0,0.35),
-      0 0 0 calc(var(--debug) * 3px) rgba(255,0,0,0.65);
-  }
-
-  /* Result in skull eyes */
-  .result{
-    position:absolute;
-    font-family:-apple-system, system-ui, sans-serif;
-    font-weight:1000;
-    color:#ffe100;
-    text-shadow:
-      0 3px 0 rgba(0,0,0,0.85),
-      0 0 14px rgba(255,225,0,0.55);
-    letter-spacing:-0.5px;
-    pointer-events:none;
-    text-align:center;
-    line-height:1;
-    transition: transform 0.15s ease;
-    user-select:none;
-  }
-
-  @media (max-width: 420px){
-    .hit{ font-size:20px; }
-  }
+/* Mobile tweak */
+@media (max-width:420px){
+  .hit{ font-size:22px; }
+}
 </style>
 </head>
 
 <body>
 
-<div class="poster" id="poster">
+<div class="poster">
 
-  <!-- DISTANCE INPUT (moved DOWN) -->
-  <input id="distance" class="hit" inputmode="decimal" autocomplete="off"
+  <!-- DISTANCE -->
+  <input id="distance" class="hit" inputmode="decimal"
     style="
-      left: 12%;
-      top: 66.2%;
-      width: 34%;
-      height: 6.2%;
+      left:12%;
+      top:68.4%;
+      width:34%;
+      height:6.2%;
     " />
 
-  <!-- WIDTH INPUT (moved DOWN) -->
-  <input id="width" class="hit" inputmode="decimal" autocomplete="off"
+  <!-- WIDTH -->
+  <input id="width" class="hit" inputmode="decimal"
     style="
-      left: 54%;
-      top: 66.2%;
-      width: 34%;
-      height: 6.2%;
+      left:54%;
+      top:68.4%;
+      width:34%;
+      height:6.2%;
     " />
 
-  <!-- CALCULATE button (moved DOWN) -->
+  <!-- CALCULATE -->
   <button id="calcBtn" class="hit"
     style="
-      left: 20%;
-      top: 77.0%;
-      width: 60%;
-      height: 7.4%;
+      left:20%;
+      top:79.3%;
+      width:60%;
+      height:7.4%;
       cursor:pointer;
-    " aria-label="Calculate">
+    ">
   </button>
 
-  <!-- Result in skull eyes (kept similar) -->
+  <!-- RESULT (Skull Eyes) -->
   <div id="result" class="result"
     style="
-      left: 33%;
-      top: 18%;
-      width: 34%;
-      font-size: 42px;
-    "></div>
+      left:33%;
+      top:18%;
+      width:34%;
+      font-size:44px;
+    ">
+  </div>
 
 </div>
 
 <script>
-  const distEl = document.getElementById('distance');
-  const widthEl = document.getElementById('width');
-  const resultEl = document.getElementById('result');
+const distEl = document.getElementById("distance");
+const widthEl = document.getElementById("width");
+const resultEl = document.getElementById("result");
+const calcBtn = document.getElementById("calcBtn");
 
-  function calculate(){
-    const D = parseFloat(distEl.value);
-    const W = parseFloat(widthEl.value);
+function calculate(){
+  const D = parseFloat(distEl.value);
+  const W = parseFloat(widthEl.value);
 
-    if(!isFinite(D) || !isFinite(W) || D<=0 || W<=0){
-      resultEl.textContent = "";
-      return;
-    }
-
-    const angle = 2 * Math.atan((W/2)/D) * 180 / Math.PI;
-    resultEl.textContent = angle.toFixed(2) + "°";
-
-    // little "eye pop"
-    resultEl.style.transform = "scale(1.15)";
-    setTimeout(()=> resultEl.style.transform="scale(1)", 140);
+  if(!isFinite(D) || !isFinite(W) || D<=0 || W<=0){
+    resultEl.textContent="";
+    return;
   }
 
-  document.getElementById('calcBtn').addEventListener('click', calculate);
+  const angle = 2 * Math.atan((W/2)/D) * 180 / Math.PI;
+  resultEl.textContent = angle.toFixed(2) + "°";
 
-  // Enter triggers calculate
-  [distEl, widthEl].forEach(el => el.addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter') calculate();
-  }));
+  /* skull eye pop */
+  resultEl.style.transform="scale(1.15)";
+  setTimeout(()=> resultEl.style.transform="scale(1)",140);
+}
+
+calcBtn.addEventListener("click",calculate);
+
+[distEl,widthEl].forEach(el=>{
+  el.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter") calculate();
+  });
+});
 </script>
 
 </body>
