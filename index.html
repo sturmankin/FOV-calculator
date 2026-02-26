@@ -6,44 +6,58 @@
 <title>SMOKERs FOV Calculator</title>
 
 <style>
-html, body{
-  height:100%;
-  overflow:hidden; /* stop rubber-band scroll */
-}
-
 body{
   margin:0;
   background:#000;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
 }
 
 /* Poster container */
 .poster{
-  position:fixed;
-  inset:0;
-  margin:auto;
+  position:relative;
   width:min(94vw, 860px);
   aspect-ratio: 1024 / 1536;
   background:url("bg.png") center/cover no-repeat;
   overflow:hidden;
 }
 
-/* Soft dark fades under inputs */
-.shadeLeft, .shadeRight{
+/* 🔹 Soft dark fade under left input */
+.shadeLeft{
   position:absolute;
+  left:21%;
   top:74.2%;
   width:34%;
   height:4.8%;
   pointer-events:none;
-  background: radial-gradient(ellipse at center,
+
+  background: radial-gradient(
+    ellipse at center,
     rgba(0,0,0,0.30) 0%,
     rgba(0,0,0,0.20) 45%,
     rgba(0,0,0,0.0) 85%
   );
 }
-.shadeLeft{ left:21%; }
-.shadeRight{ left:54%; }
 
-/* Shared style for “integrated” UI text */
+/* 🔹 Soft dark fade under right input */
+.shadeRight{
+  position:absolute;
+  left:54%;
+  top:74.2%;
+  width:34%;
+  height:4.8%;
+  pointer-events:none;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0,0,0,0.30) 0%,
+    rgba(0,0,0,0.20) 45%,
+    rgba(0,0,0,0.0) 85%
+  );
+}
+
+/* Input overlays */
 .hit{
   position:absolute;
   border:0;
@@ -52,6 +66,7 @@ body{
 
   color:#ffffff;
   -webkit-text-fill-color:#ffffff;
+  caret-color:#ffffff;
 
   font-family:-apple-system, system-ui, sans-serif;
   font-weight:1000;
@@ -61,6 +76,7 @@ body{
   padding:0;
   margin:0;
 
+  /* Clean outline using shadow */
   text-shadow:
     -1px 0 #000,
      1px 0 #000,
@@ -69,25 +85,9 @@ body{
      0  3px 0 rgba(0,0,0,0.8);
 }
 
-/* Clickable “fake inputs” */
-.fieldBtn{
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  user-select:none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* subtle focus ring when we programmatically “flash” */
-.fieldBtn.flash{
-  box-shadow:0 0 0 3px rgba(255,255,255,0.18);
+.hit:focus{
+  box-shadow:0 0 0 3px rgba(255,255,255,0.2);
   border-radius:12px;
-}
-
-/* Calculate button area (invisible) */
-.calcBtn{
-  cursor:pointer;
 }
 
 /* Result in skull eyes */
@@ -96,216 +96,96 @@ body{
   font-family:-apple-system, system-ui, sans-serif;
   font-weight:1000;
   color:#ffffff;
+
   text-shadow:
     -2px 0 #000,
      2px 0 #000,
      0 -2px #000,
      0  2px #000,
      0  4px 0 rgba(0,0,0,0.85);
+
   letter-spacing:-0.5px;
   pointer-events:none;
   text-align:center;
   transition:transform 0.15s ease;
 }
 
-/* ===== Modal numeric entry ===== */
-.modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  place-items:center;
-  z-index:9999;
-}
-.modal.show{ display:grid; }
-
-.modalBackdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.65);
-  backdrop-filter: blur(6px);
-}
-
-.modalCard{
-  position:relative;
-  width:min(92vw, 420px);
-  background:rgba(255,255,255,0.92);
-  border:4px solid #000;
-  border-radius:22px;
-  box-shadow:12px 14px 0 rgba(0,0,0,0.35);
-  padding:16px;
-}
-
-.modalTitle{
-  font-weight:1000;
-  font-size:18px;
-  margin-bottom:10px;
-  text-align:center;
-}
-
-.modalInput{
-  width:100%;
-  box-sizing:border-box;
-  font-size:28px;
-  font-weight:1000;
-  padding:12px 12px;
-  border-radius:16px;
-  border:3px solid #000;
-  outline:none;
-  text-align:center;
-  background:#fff;
-}
-
-.modalButtons{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-
-.modalButtons button{
-  flex:1;
-  font-size:16px;
-  font-weight:1000;
-  padding:12px;
-  border-radius:16px;
-  border:3px solid #000;
-  cursor:pointer;
-}
-
-.btnOk{ background:#000; color:#fff; }
-.btnCancel{ background:#fff; color:#000; }
-
 @media (max-width:420px){
   .hit{ font-size:20px; }
-  .modalInput{ font-size:24px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="poster" id="poster">
+<div class="poster">
 
+  <!-- Soft shading -->
   <div class="shadeLeft"></div>
   <div class="shadeRight"></div>
 
-  <!-- DISTANCE “fake input” -->
-  <div id="distanceBtn" class="hit fieldBtn"
-    style="left:21%; top:74.2%; width:34%; height:4.8%;">
-  </div>
+  <!-- DISTANCE -->
+  <input id="distance" class="hit"
+    inputmode="numeric" pattern="[0-9]*" maxlength="4"
+    style="
+      left:21%;
+      top:74.2%;
+      width:34%;
+      height:4.8%;
+    " />
 
-  <!-- WIDTH “fake input” -->
-  <div id="widthBtn" class="hit fieldBtn"
-    style="left:54%; top:74.2%; width:34%; height:4.8%;">
-  </div>
+  <!-- WIDTH -->
+  <input id="width" class="hit"
+    inputmode="numeric" pattern="[0-9]*" maxlength="4"
+    style="
+      left:54%;
+      top:74.2%;
+      width:34%;
+      height:4.8%;
+    " />
 
-  <!-- CALCULATE (invisible hit area) -->
-  <div id="calcBtn" class="hit calcBtn"
-    style="left:20%; top:81.5%; width:60%; height:7%;">
-  </div>
+  <!-- CALCULATE -->
+  <button id="calcBtn" class="hit"
+    style="
+      left:20%;
+      top:81.5%;
+      width:60%;
+      height:7%;
+      cursor:pointer;
+    ">
+  </button>
 
   <!-- RESULT -->
   <div id="result" class="result"
-    style="left:33%; top:14%; width:34%; font-size:56px;">
+    style="
+      left:33%;
+      top:14%;
+      width:34%;
+      font-size:56px;
+    ">
   </div>
 
-</div>
-
-<!-- Modal -->
-<div id="modal" class="modal" aria-hidden="true">
-  <div class="modalBackdrop" id="modalBackdrop"></div>
-  <div class="modalCard" role="dialog" aria-modal="true">
-    <div class="modalTitle" id="modalTitle">Enter value</div>
-    <input id="modalInput" class="modalInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" />
-    <div class="modalButtons">
-      <button class="btnCancel" id="btnCancel" type="button">Cancel</button>
-      <button class="btnOk" id="btnOk" type="button">OK</button>
-    </div>
-  </div>
 </div>
 
 <script>
-const distanceBtn = document.getElementById("distanceBtn");
-const widthBtn = document.getElementById("widthBtn");
-const calcBtn = document.getElementById("calcBtn");
+const distEl = document.getElementById("distance");
+const widthEl = document.getElementById("width");
 const resultEl = document.getElementById("result");
+const calcBtn = document.getElementById("calcBtn");
 
-const modal = document.getElementById("modal");
-const modalBackdrop = document.getElementById("modalBackdrop");
-const modalTitle = document.getElementById("modalTitle");
-const modalInput = document.getElementById("modalInput");
-const btnOk = document.getElementById("btnOk");
-const btnCancel = document.getElementById("btnCancel");
-
-let distanceVal = "";
-let widthVal = "";
-let activeField = null; // "distance" | "width"
-
-function enforce4DigitsStr(s){
-  return (s || "").replace(/\D+/g, "").slice(0,4);
-}
-
-function renderFields(){
-  distanceBtn.textContent = distanceVal || "";
-  widthBtn.textContent = widthVal || "";
-}
-
-function openModal(field){
-  activeField = field;
-  modal.classList.add("show");
-  modal.setAttribute("aria-hidden", "false");
-
-  const current = field === "distance" ? distanceVal : widthVal;
-  modalTitle.textContent = field === "distance" ? "Distance (cm)" : "Width (cm)";
-  modalInput.value = current;
-
-  // Focus after a tick so iOS reliably opens keyboard
-  setTimeout(() => modalInput.focus(), 50);
-}
-
-function closeModal(){
-  modal.classList.remove("show");
-  modal.setAttribute("aria-hidden", "true");
-  activeField = null;
-}
-
-function saveModal(){
-  const v = enforce4DigitsStr(modalInput.value);
-  if(activeField === "distance") distanceVal = v;
-  if(activeField === "width") widthVal = v;
-  renderFields();
-  closeModal();
-}
-
-distanceBtn.addEventListener("click", () => openModal("distance"));
-widthBtn.addEventListener("click", () => openModal("width"));
-
-btnOk.addEventListener("click", saveModal);
-btnCancel.addEventListener("click", closeModal);
-modalBackdrop.addEventListener("click", closeModal);
-
-modalInput.addEventListener("input", () => {
-  modalInput.value = enforce4DigitsStr(modalInput.value);
-});
-
-modalInput.addEventListener("keydown", (e) => {
-  if(e.key === "Enter") saveModal();
-  if(e.key === "Escape") closeModal();
-});
-
-function flash(el){
-  el.classList.add("flash");
-  setTimeout(() => el.classList.remove("flash"), 180);
+function enforce4Digits(el){
+  el.value = (el.value || "").replace(/\D+/g, "").slice(0,4);
 }
 
 function calculate(){
-  const D = parseFloat(distanceVal);
-  const W = parseFloat(widthVal);
+  enforce4Digits(distEl);
+  enforce4Digits(widthEl);
+
+  const D = parseFloat(distEl.value);
+  const W = parseFloat(widthEl.value);
 
   if(!isFinite(D) || !isFinite(W) || D<=0 || W<=0){
-    resultEl.textContent = "";
-    // show where the problem is
-    if(!isFinite(D) || D<=0) flash(distanceBtn);
-    if(!isFinite(W) || W<=0) flash(widthBtn);
+    resultEl.textContent="";
     return;
   }
 
@@ -316,10 +196,15 @@ function calculate(){
   setTimeout(()=> resultEl.style.transform="scale(1)",140);
 }
 
-calcBtn.addEventListener("click", calculate);
+distEl.addEventListener("input",()=>enforce4Digits(distEl));
+widthEl.addEventListener("input",()=>enforce4Digits(widthEl));
+calcBtn.addEventListener("click",calculate);
 
-// init
-renderFields();
+[distEl,widthEl].forEach(el=>{
+  el.addEventListener("keydown",(e)=>{
+    if(e.key==="Enter") calculate();
+  });
+});
 </script>
 
 </body>
