@@ -14,6 +14,7 @@ body{
   place-items:center;
 }
 
+/* Poster container */
 .poster{
   position:relative;
   width:min(94vw, 860px);
@@ -22,6 +23,19 @@ body{
   overflow:hidden;
 }
 
+/* Darker strip behind inputs */
+.inputShade{
+  position:absolute;
+  left:10%;
+  top:71%;
+  width:80%;
+  height:10%;
+  background:rgba(0,0,0,0.35);
+  border-radius:24px;
+  pointer-events:none;
+}
+
+/* Input overlays */
 .hit{
   position:absolute;
   border:0;
@@ -29,8 +43,7 @@ body{
   background:transparent;
 
   color:#ffffff;
-  -webkit-text-fill-color:#ffffff;   /* iOS Safari */
-
+  -webkit-text-fill-color:#ffffff;
   caret-color:#ffffff;
 
   font-family:-apple-system, system-ui, sans-serif;
@@ -41,7 +54,7 @@ body{
   padding:0;
   margin:0;
 
-  /* ✅ clean outline + depth (no text-stroke artifacts on digits like 2) */
+  /* Clean shadow outline */
   text-shadow:
     -1px 0 #000,
      1px 0 #000,
@@ -55,13 +68,13 @@ body{
   border-radius:12px;
 }
 
+/* Result in skull eyes */
 .result{
   position:absolute;
   font-family:-apple-system, system-ui, sans-serif;
   font-weight:1000;
   color:#ffffff;
 
-  /* clean black outline using shadow */
   text-shadow:
     -2px 0 #000,
      2px 0 #000,
@@ -84,6 +97,9 @@ body{
 <body>
 
 <div class="poster">
+
+  <!-- Darker area -->
+  <div class="inputShade"></div>
 
   <!-- DISTANCE -->
   <input id="distance" class="hit"
