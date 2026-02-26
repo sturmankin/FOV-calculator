@@ -14,7 +14,6 @@ body{
   place-items:center;
 }
 
-/* Poster container (bg.png = 1024x1536 = 2:3 ratio) */
 .poster{
   position:relative;
   width:min(94vw, 860px);
@@ -23,39 +22,34 @@ body{
   overflow:hidden;
 }
 
-/* Overlays aligned to artwork */
 .hit{
   position:absolute;
   border:0;
   outline:0;
   background:transparent;
 
-  /* ✅ White text */
   color:#fff;
-  -webkit-text-fill-color:#fff;   /* iOS Safari */
+  -webkit-text-fill-color:#fff;
   caret-color:#fff;
 
   font-family:-apple-system, system-ui, sans-serif;
   font-weight:1000;
-  font-size:30px;
+  font-size:26px;
   text-align:center;
 
   padding:0;
   margin:0;
 
-  /* makes white readable on light/blue field */
   text-shadow:
-    0 3px 0 rgba(0,0,0,0.85),
-    0 0 10px rgba(0,0,0,0.35);
+    0 3px 0 rgba(0,0,0,0.9),
+    0 0 10px rgba(0,0,0,0.4);
 }
 
-/* subtle focus ring */
 .hit:focus{
-  box-shadow:0 0 0 3px rgba(255,255,255,0.18);
+  box-shadow:0 0 0 3px rgba(255,255,255,0.2);
   border-radius:12px;
 }
 
-/* Result in skull eyes */
 .result{
   position:absolute;
   font-family:-apple-system, system-ui, sans-serif;
@@ -70,9 +64,8 @@ body{
   transition:transform 0.15s ease;
 }
 
-/* Mobile tweak */
 @media (max-width:420px){
-  .hit{ font-size:22px; }
+  .hit{ font-size:20px; }
 }
 </style>
 </head>
@@ -81,43 +74,46 @@ body{
 
 <div class="poster">
 
-  <!-- DISTANCE (moved DOWN into the blue box) -->
-  <input id="distance" class="hit" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+  <!-- DISTANCE -->
+  <input id="distance" class="hit"
+    inputmode="numeric" pattern="[0-9]*" maxlength="4"
     style="
       left:12%;
-      top:72.1%;
+      top:74.2%;
       width:34%;
-      height:5.6%;
+      height:4.8%;
     " />
 
-  <!-- WIDTH (moved DOWN into the blue box) -->
-  <input id="width" class="hit" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+  <!-- WIDTH -->
+  <input id="width" class="hit"
+    inputmode="numeric" pattern="[0-9]*" maxlength="4"
     style="
       left:54%;
-      top:72.1%;
+      top:74.2%;
       width:34%;
-      height:5.6%;
+      height:4.8%;
     " />
 
-  <!-- CALCULATE (kept same for now) -->
+  <!-- CALCULATE -->
   <button id="calcBtn" class="hit"
     style="
       left:20%;
-      top:79.3%;
+      top:81.5%;
       width:60%;
-      height:7.4%;
+      height:7%;
       cursor:pointer;
-    " aria-label="Calculate">
+    ">
   </button>
 
-  <!-- RESULT (Skull Eyes) -->
+  <!-- RESULT -->
   <div id="result" class="result"
     style="
       left:33%;
       top:18%;
       width:34%;
       font-size:44px;
-    "></div>
+    ">
+  </div>
 
 </div>
 
@@ -128,8 +124,7 @@ const resultEl = document.getElementById("result");
 const calcBtn = document.getElementById("calcBtn");
 
 function enforce4Digits(el){
-  // keep only digits, max 4
-  el.value = (el.value || "").replace(/\D+/g, "").slice(0, 4);
+  el.value = (el.value || "").replace(/\D+/g, "").slice(0,4);
 }
 
 function calculate(){
@@ -151,10 +146,9 @@ function calculate(){
   setTimeout(()=> resultEl.style.transform="scale(1)",140);
 }
 
-distEl.addEventListener("input", () => enforce4Digits(distEl));
-widthEl.addEventListener("input", () => enforce4Digits(widthEl));
-
-calcBtn.addEventListener("click", calculate);
+distEl.addEventListener("input",()=>enforce4Digits(distEl));
+widthEl.addEventListener("input",()=>enforce4Digits(widthEl));
+calcBtn.addEventListener("click",calculate);
 
 [distEl,widthEl].forEach(el=>{
   el.addEventListener("keydown",(e)=>{
