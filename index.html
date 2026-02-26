@@ -28,9 +28,11 @@ body{
   outline:0;
   background:transparent;
 
-  color:#fff;
-  -webkit-text-fill-color:#fff;
-  caret-color:#fff;
+  color:#ffffff;
+  -webkit-text-fill-color:#ffffff;   /* iOS Safari */
+  -webkit-text-stroke: 2px #000;     /* ✨ black outline */
+
+  caret-color:#ffffff;
 
   font-family:-apple-system, system-ui, sans-serif;
   font-weight:1000;
@@ -40,9 +42,9 @@ body{
   padding:0;
   margin:0;
 
+  /* subtle depth */
   text-shadow:
-    0 3px 0 rgba(0,0,0,0.9),
-    0 0 10px rgba(0,0,0,0.4);
+    0 3px 0 rgba(0,0,0,0.8);
 }
 
 .hit:focus{
