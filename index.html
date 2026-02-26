@@ -61,12 +61,13 @@ body{
   font-weight:1000;
   color:#ffffff;
 
-  /* ✨ clean black outline */
-  -webkit-text-stroke: 2px #000;
-
-  /* subtle depth */
+  /* clean black outline using shadow */
   text-shadow:
-    0 3px 0 rgba(0,0,0,0.8);
+    -2px 0 #000,
+     2px 0 #000,
+     0 -2px #000,
+     0  2px #000,
+     0  4px 0 rgba(0,0,0,0.85);
 
   letter-spacing:-0.5px;
   pointer-events:none;
