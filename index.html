@@ -23,16 +23,38 @@ body{
   overflow:hidden;
 }
 
-/* Darker strip behind inputs */
-.inputShade{
+/* 🔹 Soft dark fade under left input */
+.shadeLeft{
   position:absolute;
-  left:10%;
-  top:71%;
-  width:80%;
-  height:10%;
-  background:rgba(0,0,0,0.35);
-  border-radius:24px;
+  left:21%;
+  top:74.2%;
+  width:34%;
+  height:4.8%;
   pointer-events:none;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0,0,0,0.30) 0%,
+    rgba(0,0,0,0.20) 45%,
+    rgba(0,0,0,0.0) 85%
+  );
+}
+
+/* 🔹 Soft dark fade under right input */
+.shadeRight{
+  position:absolute;
+  left:54%;
+  top:74.2%;
+  width:34%;
+  height:4.8%;
+  pointer-events:none;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0,0,0,0.30) 0%,
+    rgba(0,0,0,0.20) 45%,
+    rgba(0,0,0,0.0) 85%
+  );
 }
 
 /* Input overlays */
@@ -54,7 +76,7 @@ body{
   padding:0;
   margin:0;
 
-  /* Clean shadow outline */
+  /* Clean outline using shadow */
   text-shadow:
     -1px 0 #000,
      1px 0 #000,
@@ -98,8 +120,9 @@ body{
 
 <div class="poster">
 
-  <!-- Darker area -->
-  <div class="inputShade"></div>
+  <!-- Soft shading -->
+  <div class="shadeLeft"></div>
+  <div class="shadeRight"></div>
 
   <!-- DISTANCE -->
   <input id="distance" class="hit"
