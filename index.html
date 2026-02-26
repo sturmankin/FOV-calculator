@@ -1,56 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FOV Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMOKERs FOV Calculator</title>
+
 <style>
-  body {
-    font-family: -apple-system, system-ui;
-    text-align: center;
-    margin-top: 50px;
-  }
-  input {
-    font-size: 22px;
-    padding: 10px;
-    width: 200px;
-    margin: 10px;
-  }
-  button {
-    font-size: 22px;
-    padding: 12px 20px;
-    margin-top: 20px;
-  }
-  #result {
-    font-size: 48px;
-    margin-top: 30px;
-    font-weight: bold;
-  }
+
+body{
+  margin:0;
+  font-family:-apple-system, system-ui, sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  /* 🔥 STREET ART BACKGROUND */
+  background: url("bg.jpg") center center / cover no-repeat fixed;
+}
+
+/* Dark vignette for depth */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at center,
+              rgba(0,0,0,0) 30%,
+              rgba(0,0,0,0.65) 100%);
+  pointer-events:none;
+}
+
+/* Main calculator bubble */
+.panel{
+  position:relative;
+  z-index:2;
+  width:min(520px, 92vw);
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(8px);
+  border:5px solid #000;
+  border-radius:28px;
+  box-shadow:14px 16px 0 rgba(0,0,0,0.35);
+  padding:20px;
+}
+
+/* Title */
+.title{
+  font-size:28px;
+  font-weight:900;
+  text-align:center;
+  margin-bottom:16px;
+}
+
+/* Input fields */
+.field{
+  margin-bottom:12px;
+}
+
+label{
+  display:block;
+  font-weight:800;
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+input{
+  width:100%;
+  font-size:20px;
+  padding:12px;
+  border-radius:14px;
+  border:3px solid #000;
+  box-sizing:border-box;
+}
+
+/* Buttons */
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+
+button{
+  flex:1;
+  font-size:18px;
+  font-weight:900;
+  padding:12px;
+  border-radius:14px;
+  border:3px solid #000;
+  cursor:pointer;
+}
+
+#calcBtn{
+  background:#111;
+  color:white;
+}
+
+#clearBtn{
+  background:white;
+  color:#111;
+}
+
+button:active{
+  transform:translate(1px,1px);
+}
+
+/* Result */
+.resultBox{
+  margin-top:18px;
+  border:3px solid #000;
+  border-radius:18px;
+  padding:12px;
+  text-align:center;
+  background:white;
+}
+
+#result{
+  font-size:56px;
+  font-weight:1000;
+  min-height:56px;
+}
+
+.hint{
+  margin-top:10px;
+  font-size:12px;
+  opacity:0.6;
+  text-align:center;
+}
+
 </style>
 </head>
+
 <body>
 
-<h2>SMOKERs FOV Calculator</h2>
+<div class="panel">
 
-<div>
-  <input id="distance" placeholder="Distance (cm)">
+  <div class="title">SMOKERs FOV Calculator</div>
+
+  <div class="field">
+    <label>Distance (cm)</label>
+    <input id="distance" inputmode="decimal" placeholder="e.g. 100">
+  </div>
+
+  <div class="field">
+    <label>Width (cm)</label>
+    <input id="width" inputmode="decimal" placeholder="e.g. 50">
+  </div>
+
+  <div class="buttons">
+    <button id="calcBtn">CALCULATE</button>
+    <button id="clearBtn">CLEAR</button>
+  </div>
+
+  <div class="resultBox">
+    <div id="result">—</div>
+  </div>
+
+  <div class="hint">
+    Use centimeters for both inputs.
+  </div>
+
 </div>
-
-<div>
-  <input id="width" placeholder="Width (cm)">
-</div>
-
-<button onclick="calculate()">Calculate</button>
-
-<div id="result"></div>
 
 <script>
-function calculate() {
+function calculate(){
   const D = parseFloat(document.getElementById('distance').value);
   const W = parseFloat(document.getElementById('width').value);
+  const result = document.getElementById('result');
+
+  if(!isFinite(D) || !isFinite(W) || D <= 0 || W <= 0){
+    result.textContent = "—";
+    return;
+  }
+
   const angle = 2 * Math.atan((W/2)/D) * 180 / Math.PI;
-  document.getElementById('result').innerText =
-    angle.toFixed(2) + "\u00B0";
+  result.textContent = angle.toFixed(2) + "°";
 }
+
+document.getElementById('calcBtn').addEventListener('click', calculate);
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('distance').value = "";
+  document.getElementById('width').value = "";
+  document.getElementById('result').textContent = "—";
+});
 </script>
 
 </body>
